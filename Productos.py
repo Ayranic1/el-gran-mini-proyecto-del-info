@@ -1,4 +1,5 @@
 # Lista de productos de ejemplo 
+# 
 productos = [
     {"nombre": "Pan", "precio": 2000.00},
     {"nombre": "Leche", "precio": 1800.00},
