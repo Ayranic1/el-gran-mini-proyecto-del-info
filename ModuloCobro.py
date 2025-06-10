@@ -1,4 +1,4 @@
-from tkinter import Frame, Label, Button, Checkbutton, IntVar, messagebox
+from tkinter import Frame, Label, Button, messagebox, Entry, Listbox, END
 from Productos import productos
 
 class PantallaCobro(Frame):
@@ -13,89 +13,58 @@ class PantallaCobro(Frame):
         label_titulo_cobro = Label(self, text="Pantalla de Cobro", font=("Arial", 16), bg="#b5daff")
         label_titulo_cobro.grid(row=0, column=0, columnspan=2, padx=10, pady=(10,10), sticky="ew")
 
-        self.vars = []
-        self.checks = []
+        # Input para código
+        self.input_codigo = Entry(self)
+        self.input_codigo.grid(row=1, column=0, padx=10, pady=5)
+
+        # Botón agregar
+        self.boton_agregar = Button(self, text="Agregar", command=self.agregar_producto, bg="#b5f5ff")
+        self.boton_agregar.grid(row=1, column=1, padx=10, pady=5)
+
+        # Lista visual
+        self.lista = Listbox(self, width=40)
+        self.lista.grid(row=2, column=0, columnspan=2, padx=10, pady=5)
+
+        # Total a pagar
         self.label_total = Label(self, text="Total: $0.00", font=("Arial", 14), bg="#b5daff")
-        self.label_total.grid(row=100, column=0, columnspan=2, pady=(10,0), sticky="ew")
+        self.label_total.grid(row=3, column=0, columnspan=2, pady=5, sticky="ew")
 
-        self.boton_calcular = Button(self, text="Calcular Total", command=self.calcular_total, bg="#b5f5ff")
-        self.boton_calcular.grid(row=101, column=0, columnspan=2, padx=10, pady=(10,10), sticky="ew")
-
+        # Botones de pago
         self.boton_efectivo = Button(self, text="Efectivo", command=lambda: self.finalizar_compra("efectivo"), bg="#b5ffb5")
         self.boton_credito = Button(self, text="Tarjeta de Crédito", command=lambda: self.finalizar_compra("credito"), bg="#b5b5ff")
         self.boton_debito = Button(self, text="Tarjeta de Débito", command=lambda: self.finalizar_compra("debito"), bg="#ffd6b5")
+        self.boton_efectivo.grid(row=4, column=0, padx=10, pady=5, sticky="ew")
+        self.boton_credito.grid(row=4, column=1, padx=10, pady=5, sticky="ew")
+        self.boton_debito.grid(row=5, column=0, columnspan=2, padx=10, pady=5, sticky="ew")
 
-        self.label_acumulados = Label(self, text="", font=("Arial", 12), bg="#b5daff", anchor="w", justify="left")
-        self.label_acumulados.grid(row=110, column=0, columnspan=2, padx=10, pady=(10,10), sticky="ew")
-
-        # Cambia aquí: usa string en mostrar_frame
         self.boton_volver = Button(self, text="Volver", command=lambda: master.mostrar_frame("PantallaPrincipal"), bg="#b5f5ff")
-        self.boton_volver.grid(row=120, column=0, columnspan=2, padx=20, pady=(10,10), sticky="ew")
+        self.boton_volver.grid(row=6, column=0, columnspan=2, padx=20, pady=(10,10), sticky="ew")
 
-        self.monto_actual = 0.0
-        self.total_compras = 0.0
-        self.total_efectivo = 0.0
-        self.total_credito = 0.0
-        self.total_debito = 0.0
+        # Variables de control
+        self.lista_productos = []
+        self.total = 0.0
 
-        self.actualizar_lista()
+        # Diccionario de productos por códigoProd
+        self.precios = {str(prod["codigoProd"]): (prod["nombre"], prod["precio"]) for prod in productos}
 
-    def actualizar_lista(self):
-        # Aquí va tu lógica para actualizar la lista de productos y los widgets
-        self.limpiar_checks()
-        self.vars = []
-        self.checks = []
-        for idx, prod in enumerate(productos):
-            var = IntVar()
-            check = Checkbutton(self, text=f"{prod['nombre']} - ${prod['precio']:.2f}", variable=var, bg="#b5daff")
-            check.grid(row=1+idx, column=0, columnspan=2, sticky="w", padx=20)
-            self.vars.append(var)
-            self.checks.append(check)
-        self.label_total.config(text="Total: $0.00")
-        self.monto_actual = 0.0
-        self.actualizar_acumulados()
-
-    def limpiar_checks(self):
-        for check in getattr(self, "checks", []):
-            check.destroy()
-
-    def calcular_total(self):
-        total = 0.0
-        for var, prod in zip(self.vars, productos):
-            if var.get():
-                total += prod["precio"]
-        self.monto_actual = total
-        self.label_total.config(text=f"Total: ${total:.2f}")
-
-        # Muestra los botones de pago solo si hay monto
-        if total > 0:
-            self.boton_efectivo.grid(row=102, column=0, padx=10, pady=(5,5), sticky="ew")
-            self.boton_credito.grid(row=102, column=1, padx=10, pady=(5,5), sticky="ew")
-            self.boton_debito.grid(row=103, column=0, columnspan=2, padx=10, pady=(5,10), sticky="ew")
+    def agregar_producto(self):
+        codigo = self.input_codigo.get()
+        if codigo in self.precios:
+            nombre, precio = self.precios[codigo]
+            self.lista_productos.append((nombre, precio))
+            self.lista.insert(END, f"{nombre} - ${precio:.2f}")
+            self.total += precio
+            self.label_total.config(text=f"Total: ${self.total:.2f}")
+            self.input_codigo.delete(0, END)
         else:
-            self.boton_efectivo.grid_remove()
-            self.boton_credito.grid_remove()
-            self.boton_debito.grid_remove()
+            messagebox.showwarning("Código inválido", "El código no existe.")
 
     def finalizar_compra(self, metodo):
-        if self.monto_actual == 0:
-            messagebox.showwarning("Atención", "Debe seleccionar al menos un producto.")
+        if not self.lista_productos:
+            messagebox.showwarning("Atención", "Debe agregar al menos un producto.")
             return
-        self.total_compras += self.monto_actual
-        if metodo == "efectivo":
-            self.total_efectivo += self.monto_actual
-        elif metodo == "credito":
-            self.total_credito += self.monto_actual
-        elif metodo == "debito":
-            self.total_debito += self.monto_actual
-        messagebox.showinfo("Compra finalizada", f"Compra realizada por ${self.monto_actual:.2f} con {metodo}.")
-        self.actualizar_lista()
-
-    def actualizar_acumulados(self):
-        texto = (
-            f"Total ventas: ${self.total_compras:.2f}\n"
-            f"Total efectivo: ${self.total_efectivo:.2f}\n"
-            f"Total crédito: ${self.total_credito:.2f}\n"
-            f"Total débito: ${self.total_debito:.2f}"
-        )
-        self.label_acumulados.config(text=texto)
+        messagebox.showinfo("Compra finalizada", f"Compra realizada por ${self.total:.2f} con {metodo}.")
+        self.lista.delete(0, END)
+        self.lista_productos.clear()
+        self.total = 0.0
+        self.label_total.config(text="Total: $0.00")

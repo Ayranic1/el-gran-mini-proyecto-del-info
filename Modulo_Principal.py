@@ -55,4 +55,4 @@ class PantallaPrincipal(Frame):
 
 if __name__ == "__main__":
     app = sistema()
-    app.mainloop()
+    app.mainloop() 
