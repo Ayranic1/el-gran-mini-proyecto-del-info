@@ -1,10 +1,11 @@
-from tkinter import Frame, Label, Button, messagebox, Entry, Listbox, END
+from tkinter import Frame, Label, Button, messagebox, Entry, Listbox, END, Scrollbar
 from Productos import productos
+from PIL import Image, ImageTk
 
 class PantallaCobro(Frame):
     def __init__(self, master):
-        # 1024x768
-        super().__init__(master, bg="#052d55", width=1024, height=768)
+        # 1024x768 
+        super().__init__(master, bg="#f5f5f6", width=900, height=450)
         self.grid_propagate(False)
         self.master = master
         
@@ -15,7 +16,7 @@ class PantallaCobro(Frame):
 
          # - - - Barra superior
         top_frame = Frame(self, bg="lightblue", bd=2, relief="groove")
-        top_frame.pack(side="top", fill="both")
+        top_frame.pack(side="top", fill="both", pady=10)
         top_frame.config(bg="#f5f5f6", border=0)
 
 
@@ -31,7 +32,7 @@ class PantallaCobro(Frame):
         self.input_codigo.pack(side="left", fill="x", expand=True, padx=20)
 
         # - - - Area de contenido principal
-        contenido_Principal = Frame(self, padx=10, pady=10, bg="#f5f5f6")
+        contenido_Principal = Frame(self, padx=10, pady=10, bg="red") #f5f5f6
         contenido_Principal.pack(fill="both", expand=True)
         contenido_Principal.grid_columnconfigure(0, weight=1)  # Columna izquierda se expande al cambiar el tamaño de la ventana
         contenido_Principal.grid_columnconfigure(1, weight=3)  # Columna derecha se expande
@@ -39,34 +40,40 @@ class PantallaCobro(Frame):
         contenido_Principal.grid_rowconfigure(1, weight=0)    # Fila central (total) es fija
         contenido_Principal.grid_rowconfigure(2, weight=0)    # Fila inferior (pagar) es fija
 
+
+    
         # - - Panel izquierdo
-        panel_izquierdo = Frame(contenido_Principal, bg="#f5f5f6")
-        panel_izquierdo.grid(row=0, column=0, rowspan=3, sticky="nsew")
+        panel_izquierdo = Frame(contenido_Principal, bg="#0000ff")#f5f5f6
+        panel_izquierdo.grid(row=0, column=0, rowspan=3, columnspan=1, sticky="nsew", padx=5, pady=5)  # Ocupa varias filas
+        panel_izquierdo.config(border=0)
+
 
         # imagen
         # prueba si la imagen se carga correctamente
         # Si no se carga, muestra un texto de marcador de posición
         try:
-            from PIL import Image, ImageTk
-            img = Image.open("images/modCobro.png")
-            image_label = Label(panel_izquierdo, image=ImageTk.PhotoImage(img))
-            image_label.image = ImageTk.PhotoImage(img)  # Mantener una referencia
+            img = Image.open("Images/modCobro.png")
+            img = img.resize((200, 200), Image.Resampling.LANCZOS)
+            imgtk = ImageTk.PhotoImage(img)
+            image_label = Label(panel_izquierdo, image=imgtk)
+            image_label.image = imgtk  # Mantener una referencia
             image_label.pack(pady=10, padx=10, fill="x")
+
         except Exception as e:
             print(f"No se pudo cargar la imagen: {e}")
             placeholder_label = Label(panel_izquierdo, text="[Imagen Aquí]", font=("Arial", 12), bg="#f5f5f6")
             placeholder_label.pack(pady=10, padx=10, fill="x")
                 
         # Botón agregar
-        self.boton_agregar = Button(self, text="Agregar", command=self.agregar_producto, bg="#b5f5ff", font=("Arial", 14))
+        self.boton_agregar = Button(panel_izquierdo, text="Agregar", command=self.agregar_producto, bg="#b5f5ff", font=("Arial", 14))
         self.boton_agregar.pack(fill="x", pady=5, padx=10)
         
         # Boton eliminar ultimo producto registrado
-        self.boton_eliminar = Button(self, text="Eliminar último producto", command=lambda: self.lista.delete(END), bg="#ffb5b5", font=("Arial", 14))
+        self.boton_eliminar = Button(panel_izquierdo, text="Eliminar último producto", command=lambda: self.lista.delete(END), bg="#ffb5b5", font=("Arial", 14))
         self.boton_eliminar.pack(fill="x", pady=5, padx=10)
 
         # Botón volver
-        self.boton_volver = Button(self, text="Volver", command=lambda: master.mostrar_frame("PantallaPrincipal"), bg="#b5f5ff", font=("Arial", 14))
+        self.boton_volver = Button(panel_izquierdo, text="Volver", command=lambda: master.mostrar_frame("PantallaPrincipal"), bg="#b5f5ff", font=("Arial", 14))
         self.boton_volver.pack(fill="x", pady=5, padx=10)
 
 
@@ -79,20 +86,21 @@ class PantallaCobro(Frame):
         nombreLab = Label(panel_derecho, text="Productos Agregados", font=("Arial", 14), bg="#f5f5f6")
         nombreLab.pack(pady=10, padx=10, fill="x")
 
+
         # Lista
         self.lista = Listbox(panel_derecho, width=40)
-        self.lista.pack(padx=10, pady=5)
+        self.lista.pack(fill="both", expand=True, padx=10, pady=5)
 
 
 
-        # Total a pagar
+        """# Total a pagar
         self.label_total = Label(self, text="Total: $0.00", font=("Arial", 14), bg="#b5daff")
         self.label_total.grid(row=3, column=0, columnspan=2, pady=5, sticky="ew")
 
         # Boton de pago
         self.boton_pagar = Button(self, text="Pagar", command=self.finalizar_compra, bg="#b5ffb5")
         self.boton_pagar.grid(row=4, column=0, columnspan=2, padx=10, pady=5, sticky="ew")
-
+"""
         
 
         

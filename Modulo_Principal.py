@@ -33,7 +33,7 @@ class PantallaPrincipal(Frame):
 
         # Fondo con imagen lam.jpg 
         try:
-            bg_img = Image.open("super.png")  # Cambia aquí el nombre si tu imagen se llama diferente 
+            bg_img = Image.open("image.png")  # Cambia aquí el nombre si tu imagen se llama diferente 
             bg_img = bg_img.resize((900, 450))
             self.bg_imgtk = ImageTk.PhotoImage(bg_img)
             self.bg_label = Label(self, image=self.bg_imgtk)
