@@ -11,6 +11,10 @@ class sistema(Tk):
         self.geometry("900x450")
         self.configure(bg="#052d55")
         self.resizable(True, True)
+
+        # Icono de la ventana
+        self.iconbitmap("Images/icono.ico")
+
         self.frames = {}
         for F in (PantallaPrincipal, PantallaCobro, PantallaListaProductos):
             frame = F(self)
