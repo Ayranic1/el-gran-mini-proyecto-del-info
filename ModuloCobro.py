@@ -44,7 +44,7 @@ class PantallaCobro(Frame):
     
         # - - Panel izquierdo
         panel_izquierdo = Frame(contenido_Principal, bg="#0000ff")#f5f5f6
-        panel_izquierdo.grid(row=0, column=0, rowspan=3, columnspan=1, sticky="nsew", padx=5, pady=5)  # Ocupa varias filas
+        panel_izquierdo.grid(row=0, column=0, rowspan=4, columnspan=1, sticky="nsew", padx=5, pady=5)  # Ocupa varias filas
         panel_izquierdo.config(border=0)
 
 
@@ -93,17 +93,15 @@ class PantallaCobro(Frame):
 
 
 
-        """# Total a pagar
-        self.label_total = Label(self, text="Total: $0.00", font=("Arial", 14), bg="#b5daff")
-        self.label_total.grid(row=3, column=0, columnspan=2, pady=5, sticky="ew")
+        # Total a pagar
+        self.label_total = Label(contenido_Principal, text="Total: $0.00", font=("Arial", 14), bg="#b5daff")
+        self.label_total.grid(row=2, column=1, columnspan=2, pady=5, sticky="ew")
 
         # Boton de pago
-        self.boton_pagar = Button(self, text="Pagar", command=self.finalizar_compra, bg="#b5ffb5")
-        self.boton_pagar.grid(row=4, column=0, columnspan=2, padx=10, pady=5, sticky="ew")
-"""
-        
+        self.boton_pagar = Button(contenido_Principal, text="Pagar", command=self.finalizar_compra, bg="#b5ffb5")
+        self.boton_pagar.grid(row=3, column=1, columnspan=2, padx=10, pady=5, sticky="ew")
 
-        
+
 
         # Variables de control
         self.lista_productos = []
