@@ -7,36 +7,83 @@ class PantallaCobro(Frame):
         super().__init__(master, bg="#052d55", width=1024, height=768)
         self.grid_propagate(False)
         self.master = master
+        
+
 
         self.grid_columnconfigure(0, weight=1)
         self.grid_columnconfigure(1, weight=1)
 
-         # --- Barra superior ---
+         # - - - Barra superior
         top_frame = Frame(self, bg="lightblue", bd=2, relief="groove")
-        top_frame.pack(side="top", fill="x", pady=10, padx=10)
+        top_frame.pack(side="top", fill="both")
+        top_frame.config(bg="#f5f5f6", border=0)
 
-        label_titulo_cobro = Label(top_frame, text="Pantalla de Cobro", font=("Arial", 16), bg="#b5daff")
-        label_titulo_cobro.grid(row=0, column=0, columnspan=2, padx=10, pady=(10,10), sticky="ew")
+
+        
+        label_titulo_cobro = Label(top_frame, text="Cobro", font=("Arial", 16), bg="#f5f5f6")
+        label_titulo_cobro.pack(side="left", padx=20)
 
         # Input para código
-        self.input_codigo = Entry(self)
-        self.input_codigo.grid(row=1, column=0, padx=10, pady=5)
+        label_codigo = Label(top_frame, text="Código del producto", font=("Arial", 11), bg="#f5f5f6", fg="black")
+        label_codigo.pack(side="left", padx=20)
+        
+        self.input_codigo = Entry(top_frame, font=("Arial", 14), width=30)
+        self.input_codigo.pack(side="left", fill="x", expand=True, padx=20)
 
+        # - - - Area de contenido principal
+        contenido_Principal = Frame(self, padx=10, pady=10, bg="#f5f5f6")
+        contenido_Principal.pack(fill="both", expand=True)
+        contenido_Principal.grid_columnconfigure(0, weight=1)  # Columna izquierda se expande al cambiar el tamaño de la ventana
+        contenido_Principal.grid_columnconfigure(1, weight=3)  # Columna derecha se expande
+        contenido_Principal.grid_rowconfigure(0, weight=1)    # Fila superior se expande
+        contenido_Principal.grid_rowconfigure(1, weight=0)    # Fila central (total) es fija
+        contenido_Principal.grid_rowconfigure(2, weight=0)    # Fila inferior (pagar) es fija
+
+        # - - Panel izquierdo
+        panel_izquierdo = Frame(contenido_Principal, bg="#f5f5f6")
+        panel_izquierdo.grid(row=0, column=0, rowspan=3, sticky="nsew")
+
+        # imagen
+        # prueba si la imagen se carga correctamente
+        # Si no se carga, muestra un texto de marcador de posición
+        try:
+            from PIL import Image, ImageTk
+            img = Image.open("images/modCobro.png")
+            image_label = Label(panel_izquierdo, image=ImageTk.PhotoImage(img))
+            image_label.image = ImageTk.PhotoImage(img)  # Mantener una referencia
+            image_label.pack(pady=10, padx=10, fill="x")
+        except Exception as e:
+            print(f"No se pudo cargar la imagen: {e}")
+            placeholder_label = Label(panel_izquierdo, text="[Imagen Aquí]", font=("Arial", 12), bg="#f5f5f6")
+            placeholder_label.pack(pady=10, padx=10, fill="x")
+                
         # Botón agregar
-        self.boton_agregar = Button(self, text="Agregar", command=self.agregar_producto, bg="#b5f5ff")
-        self.boton_agregar.grid(row=1, column=1, padx=10, pady=5)
-
-        # Lista visual
-        self.lista = Listbox(self, width=40)
-        self.lista.grid(row=2, column=1, columnspan=2, padx=10, pady=5)
+        self.boton_agregar = Button(self, text="Agregar", command=self.agregar_producto, bg="#b5f5ff", font=("Arial", 14))
+        self.boton_agregar.pack(fill="x", pady=5, padx=10)
+        
+        # Boton eliminar ultimo producto registrado
+        self.boton_eliminar = Button(self, text="Eliminar último producto", command=lambda: self.lista.delete(END), bg="#ffb5b5", font=("Arial", 14))
+        self.boton_eliminar.pack(fill="x", pady=5, padx=10)
 
         # Botón volver
-        self.boton_volver = Button(self, text="Volver", command=lambda: master.mostrar_frame("PantallaPrincipal"), bg="#b5f5ff")
-        self.boton_volver.grid(row=2, column=0, columnspan=2, padx=20, pady=(10,10), sticky="ew")
+        self.boton_volver = Button(self, text="Volver", command=lambda: master.mostrar_frame("PantallaPrincipal"), bg="#b5f5ff", font=("Arial", 14))
+        self.boton_volver.pack(fill="x", pady=5, padx=10)
 
-        # Boton eliminar ultimo producto registrado
-        self.boton_eliminar = Button(self, text="Eliminar último producto", command=lambda: self.lista.delete(END), bg="#ffb5b5")
-        self.boton_eliminar.grid(row=3, column=0, padx=10, pady=5, sticky="ew")
+
+
+
+        # - - Panel derecho - parte de la lista de productos
+        panel_derecho = Frame(contenido_Principal, bg="#f5f5f6")
+        panel_derecho.grid(row=0, column=1, sticky="nsew")
+
+        nombreLab = Label(panel_derecho, text="Productos Agregados", font=("Arial", 14), bg="#f5f5f6")
+        nombreLab.pack(pady=10, padx=10, fill="x")
+
+        # Lista
+        self.lista = Listbox(panel_derecho, width=40)
+        self.lista.pack(padx=10, pady=5)
+
+
 
         # Total a pagar
         self.label_total = Label(self, text="Total: $0.00", font=("Arial", 14), bg="#b5daff")

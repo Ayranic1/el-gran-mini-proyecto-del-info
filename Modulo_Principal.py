@@ -10,7 +10,7 @@ class sistema(Tk):
         self.title("Sistema de Caja para Supermercado")
         self.geometry("900x450")
         self.configure(bg="#052d55")
-        self.resizable(False, False)
+        self.resizable(True, True)
         self.frames = {}
         for F in (PantallaPrincipal, PantallaCobro, PantallaListaProductos):
             frame = F(self)
