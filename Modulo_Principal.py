@@ -72,7 +72,7 @@ class sistema(Tk):
         super().__init__()
         self.title("Sistema de Caja para Supermercado")
         self.geometry("900x450")
-        # self.configure(bg="#052d55")  # Eliminado para mostrar solo la imagen de fondo
+        self.configure(bg="#052d55")
         self.resizable(False, False)
         self.frames = {}
         for F in (PantallaPrincipal, PantallaCobro, PantallaListaProductos):
@@ -94,16 +94,16 @@ class PantallaPrincipal(Frame):
         self.grid_columnconfigure(0, weight=1)
         self.grid_columnconfigure(1, weight=1)
 
-        # Canvas para fondo
-        self.canvas = Canvas(self, width=900, height=450, highlightthickness=0)
-        self.canvas.place(x=0, y=0, relwidth=1, relheight=1)
-
-        #Cargar y mostrar la imagen
-        self.bg_img = Image.open("fondo.jpg")
-        self.bg_img = self.bg_img.resize((900, 450))
-        self.bg_imgtk = ImageTk.PhotoImage(self.bg_img)
-        self.canvas.create_image(0, 0, anchor="nw", image=self.bg_imgtk)
-
+        # Fondo con imagen lam.jpg 
+        try:
+            bg_img = Image.open("super.png")  # Cambia aquí el nombre si tu imagen se llama diferente 
+            bg_img = bg_img.resize((900, 450))
+            self.bg_imgtk = ImageTk.PhotoImage(bg_img)
+            self.bg_label = Label(self, image=self.bg_imgtk)
+            self.bg_label.place(x=0, y=0, relwidth=1, relheight=1)
+        except Exception:
+            self.bg_label = Label(self, bg="#052d55")
+            self.bg_label.place(x=0, y=0, relwidth=1, relheight=1)
 
         # Widgets principales (encima del fondo)
         label_titulo = Label(self, text="Bienvenido al Sistema de Caja", font=("Arial", 16), bg="#032241", fg="white")
@@ -127,4 +127,4 @@ class PantallaPrincipal(Frame):
 
 if __name__ == "__main__":
     app = sistema()
-    app.mainloop()
+    app.mainloop() 
