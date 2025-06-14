@@ -1,16 +1,16 @@
 from tkinter import Frame, Label, Button, messagebox, Entry, Listbox, END, Scrollbar
-from Productos import productos
 from PIL import Image, ImageTk
+# Importa el nuevo módulo que gestiona los productos
+import gestor_productos # Cambiado de 'Productos' a 'gestor_productos'
 
 class PantallaCobro(Frame):
     def __init__(self, master):
-        # 1024x768 
         super().__init__(master, bg="#f5f5f6", width=900, height=450)
         self.grid_propagate(False)
         self.master = master
         
 
-
+        # Configuración de la cuadrícula: permite que las columnas se expandan
         self.grid_columnconfigure(0, weight=1)
         self.grid_columnconfigure(1, weight=1)
 
@@ -75,7 +75,6 @@ class PantallaCobro(Frame):
 
 
 
-
         # - - Panel derecho - parte de la lista de productos
         panel_derecho = Frame(contenido_Principal, bg="#f5f5f6")
         panel_derecho.grid(row=0, column=1, sticky="nsew")
@@ -120,32 +119,35 @@ class PantallaCobro(Frame):
 
 
         # Variables de control
-        self.lista_productos = []
+        self.lista_productos_en_cobro = [] # Cambiado para evitar confusión con la lista global
         self.total = 0.0
 
-        # Diccionario de productos por códigoProd
-        self.precios = {str(prod["codigoProd"]): (prod["nombre"], prod["precio"]) for prod in productos}
-
-
-
     def agregar_producto(self):
-        codigo = self.input_codigo.get()
-        if codigo in self.precios:
-            nombre, precio = self.precios[codigo]
-            self.lista_productos.append((nombre, precio))
+        codigo = self.input_codigo.get().strip() # .strip() para eliminar espacios en blanco
+        if not codigo: # Validar que el campo no esté vacío
+            messagebox.showwarning("Entrada Vacía", "Por favor, ingrese un código de producto.")
+            return
+
+        # Ahora obtenemos el producto del gestor, que leerá del JSON
+        producto_encontrado = gestor_productos.buscar_producto_por_codigo(codigo)
+        
+        if producto_encontrado:
+            nombre = producto_encontrado['nombre']
+            precio = producto_encontrado['precio']
+            self.lista_productos_en_cobro.append((nombre, precio))
             self.lista.insert(END, f"{nombre} - ${precio:.2f}")
             self.total += precio
             self.label_total.config(text=f"Total: ${self.total:.2f}")
             self.input_codigo.delete(0, END)
         else:
-            messagebox.showwarning("Código inválido", "El código no existe.")
+            messagebox.showwarning("Código inválido", f"El producto con código '{codigo}' no existe.")
 
     def finalizar_compra(self):
-        if not self.lista_productos:
+        if not self.lista_productos_en_cobro:
             messagebox.showwarning("Atención", "Debe agregar al menos un producto.")
             return
         messagebox.showinfo("Compra finalizada", f"Compra realizada por ${self.total:.2f}.")
         self.lista.delete(0, END)
-        self.lista_productos.clear()
+        self.lista_productos_en_cobro.clear()
         self.total = 0.0
         self.label_total.config(text="Total: $0.00")

@@ -1,0 +1,32 @@
+[
+    {
+        "codigoProd": 123,
+        "nombre": "Pan",
+        "precio": 2000.0
+    },
+    {
+        "codigoProd": 124,
+        "nombre": "Leche",
+        "precio": 1800.0
+    },
+    {
+        "codigoProd": 125,
+        "nombre": "Huevos",
+        "precio": 4000.0
+    },
+    {
+        "codigoProd": 126,
+        "nombre": "Queso los 100g",
+        "precio": 800.0
+    },
+    {
+        "codigoProd": 127,
+        "nombre": "Arroz",
+        "precio": 2200.0
+    },
+    {
+        "codigoProd": 100,
+        "nombre": "Agua 1lt",
+        "precio": 1200.0
+    }
+]
