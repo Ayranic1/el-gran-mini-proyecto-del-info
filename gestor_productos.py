@@ -1,42 +1,35 @@
 import json
 import os
 
-# Define la ruta del archivo JSON donde se guardarán los productos
-# Es buena práctica definirla una vez para evitar errores de tipeo
+# Archivo con datos de productos
 RUTA_ARCHIVO_PRODUCTOS = 'productos.json'
 
 def _cargar_productos():
     """
-    Función interna para cargar los productos desde el archivo JSON.
+    Función para cargar los productos desde el archivo JSON.
     Si el archivo no existe o está vacío, devuelve una lista vacía.
     """
     if not os.path.exists(RUTA_ARCHIVO_PRODUCTOS) or os.path.getsize(RUTA_ARCHIVO_PRODUCTOS) == 0:
-        # Si el archivo no existe o está vacío, inicializa con productos predeterminados o una lista vacía
-        # Puedes decidir si quieres iniciar con productos predefinidos o siempre con una lista vacía.
-        # Para esta implementación, si no hay archivo, empieza con una lista vacía.
-        # Si quieres que inicie con los productos que tenías antes:
-        # return [
-        #     {"codigoProd": 123, "nombre": "Pan", "precio": 2000.00},
-        #     {"codigoProd": 124, "nombre": "Leche", "precio": 1800.00},
-        #     {"codigoProd": 125, "nombre": "Huevos", "precio": 4000.00},
-        #     {"codigoProd": 126, "nombre": "Queso los 100g", "precio": 800.00},
-        #     {"codigoProd": 127, "nombre": "Arroz", "precio": 2200.00},
-        # ]
         return []
+    
+
     try:
         with open(RUTA_ARCHIVO_PRODUCTOS, 'r', encoding='utf-8') as f:
             return json.load(f)
     except json.JSONDecodeError:
-        # Esto maneja el caso de que el JSON no sea válido (por ejemplo, corrupto)
+        # Esto maneja el caso de que el JSON no sea válido
         print(f"Advertencia: El archivo {RUTA_ARCHIVO_PRODUCTOS} está corrupto. Se iniciará con una lista vacía.")
         return []
     except Exception as e:
+        # para cualquier tipo de error
         print(f"Error al cargar productos: {e}. Se iniciará con una lista vacía.")
         return []
+    
+
 
 def _guardar_productos(productos):
     """
-    Función interna para guardar la lista actual de productos en el archivo JSON.
+    Función para guardar la lista actual de productos en el archivo JSON.
     """
     with open(RUTA_ARCHIVO_PRODUCTOS, 'w', encoding='utf-8') as f:
         # indent=4 para que el JSON sea legible, ensure_ascii=False para caracteres especiales
@@ -55,6 +48,7 @@ if not os.path.exists(RUTA_ARCHIVO_PRODUCTOS) or os.path.getsize(RUTA_ARCHIVO_PR
     _guardar_productos(productos_iniciales)
 
 
+
 # --- Funciones públicas para interactuar con los productos ---
 
 def obtener_todos_los_productos():
@@ -63,6 +57,7 @@ def obtener_todos_los_productos():
     Otros módulos deben usar esta función para obtener los datos más recientes.
     """
     return _cargar_productos()
+
 
 def agregar_producto(codigo, nombre, precio):
     """
@@ -83,6 +78,7 @@ def agregar_producto(codigo, nombre, precio):
     productos_actuales.append(nuevo_producto)
     _guardar_productos(productos_actuales)
     return True, f"Producto '{nombre}' agregado exitosamente."
+
 
 def modificar_producto(codigo, nuevo_nombre=None, nuevo_precio=None):
     """
@@ -105,6 +101,7 @@ def modificar_producto(codigo, nuevo_nombre=None, nuevo_precio=None):
     else:
         return False, f"Error: No se encontró ningún producto con el código '{codigo}'."
 
+
 def eliminar_producto(codigo):
     """
     Elimina un producto por su código y guarda los cambios.
@@ -117,6 +114,7 @@ def eliminar_producto(codigo):
         return True, f"Producto con código '{codigo}' eliminado exitosamente."
     else:
         return False, f"Error: No se encontró ningún producto con el código '{codigo}'."
+
 
 def buscar_producto_por_codigo(codigo):
     """

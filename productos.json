@@ -25,6 +25,11 @@
         "precio": 2200.0
     },
     {
+        "codigoProd": 130,
+        "nombre": "Salchicha",
+        "precio": 2200.0
+    },
+    {
         "codigoProd": 100,
         "nombre": "Agua 1lt",
         "precio": 1200.0

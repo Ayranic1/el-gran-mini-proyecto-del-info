@@ -1,7 +1,6 @@
 from tkinter import Frame, Label, Button, messagebox, Entry, Listbox, END, Scrollbar
 from PIL import Image, ImageTk
-# Importa el nuevo módulo que gestiona los productos
-import gestor_productos # Cambiado de 'Productos' a 'gestor_productos'
+import gestor_productos # Importa tu nuevo módulo de productos
 
 class PantallaCobro(Frame):
     def __init__(self, master):
@@ -66,7 +65,8 @@ class PantallaCobro(Frame):
         self.boton_agregar.pack(fill="x", pady=5, padx=10)
         
         # Boton eliminar ultimo producto registrado
-        self.boton_eliminar = Button(panel_izquierdo, text="Eliminar último producto", command=lambda: self.lista.delete(END), bg="#adadc2", font=("Arial", 14))
+        # ¡AQUÍ ESTÁ EL CAMBIO! Ahora llama a un nuevo método `eliminar_ultimo_producto_en_cobro`
+        self.boton_eliminar = Button(panel_izquierdo, text="Eliminar último producto", command=self.eliminar_ultimo_producto_en_cobro, bg="#adadc2", font=("Arial", 14))
         self.boton_eliminar.pack(fill="x", pady=5, padx=10)
 
         # Botón volver
@@ -117,10 +117,10 @@ class PantallaCobro(Frame):
         self.boton_pagar.pack(fill="both", expand=True)
 
 
-
         # Variables de control
-        self.lista_productos_en_cobro = [] # Cambiado para evitar confusión con la lista global
+        self.lista_productos_en_cobro = [] # Usar un nombre más descriptivo para los productos en la transacción actual
         self.total = 0.0
+
 
     def agregar_producto(self):
         codigo = self.input_codigo.get().strip() # .strip() para eliminar espacios en blanco
@@ -128,19 +128,39 @@ class PantallaCobro(Frame):
             messagebox.showwarning("Entrada Vacía", "Por favor, ingrese un código de producto.")
             return
 
-        # Ahora obtenemos el producto del gestor, que leerá del JSON
+        # Obtenemos el producto del gestor, que leerá del JSON
         producto_encontrado = gestor_productos.buscar_producto_por_codigo(codigo)
         
         if producto_encontrado:
             nombre = producto_encontrado['nombre']
             precio = producto_encontrado['precio']
-            self.lista_productos_en_cobro.append((nombre, precio))
+            # Guarda el nombre y precio en la lista interna
+            self.lista_productos_en_cobro.append((nombre, precio)) 
             self.lista.insert(END, f"{nombre} - ${precio:.2f}")
             self.total += precio
             self.label_total.config(text=f"Total: ${self.total:.2f}")
             self.input_codigo.delete(0, END)
         else:
             messagebox.showwarning("Código inválido", f"El producto con código '{codigo}' no existe.")
+
+    def eliminar_ultimo_producto_en_cobro(self):
+        """
+        Elimina el último producto de la lista visual y descuenta su precio del total.
+        """
+        if self.lista_productos_en_cobro: # Asegúrate de que haya productos para eliminar
+            # Elimina el último elemento de la lista interna
+            nombre_producto_eliminado, precio_producto_eliminado = self.lista_productos_en_cobro.pop()
+            
+            # Elimina el último elemento de la Listbox visual
+            self.lista.delete(END)
+            
+            # Descuenta el precio del total
+            self.total -= precio_producto_eliminado
+            self.label_total.config(text=f"Total: ${self.total:.2f}")
+            messagebox.showinfo("Producto Eliminado", f"Se eliminó '{nombre_producto_eliminado}' de la lista de cobro.")
+        else:
+            messagebox.showwarning("Atención", "No hay productos en la lista para eliminar.")
+
 
     def finalizar_compra(self):
         if not self.lista_productos_en_cobro:
@@ -151,3 +171,8 @@ class PantallaCobro(Frame):
         self.lista_productos_en_cobro.clear()
         self.total = 0.0
         self.label_total.config(text="Total: $0.00")
+
+    # Esta función se mantiene pero no es estrictamente necesaria para el flujo actual
+    # ya que `buscar_producto_por_codigo` siempre carga la última versión.
+    def actualizar_lista(self):
+        pass
