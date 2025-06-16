@@ -11,14 +11,13 @@ def _cargar_productos():
     """
     if not os.path.exists(RUTA_ARCHIVO_PRODUCTOS) or os.path.getsize(RUTA_ARCHIVO_PRODUCTOS) == 0:
         return []
-    
 
     try:
         with open(RUTA_ARCHIVO_PRODUCTOS, 'r', encoding='utf-8') as f:
             return json.load(f)
     except json.JSONDecodeError:
         # Esto maneja el caso de que el JSON no sea válido
-        print(f"Advertencia: El archivo {RUTA_ARCHIVO_PRODUCTOS} está corrupto. Se iniciará con una lista vacía.")
+        print(f"Advertencia: El archivo {RUTA_ARCHIVO_PRODUCTOS} está corrupto. Se iniciará con una lista vacía.") 
         return []
     except Exception as e:
         # para cualquier tipo de error
@@ -29,14 +28,14 @@ def _cargar_productos():
 
 def _guardar_productos(productos):
     """
-    Función para guardar la lista actual de productos en el archivo JSON.
+        Función para guardar la lista actual de productos en el archivo JSON.
     """
     with open(RUTA_ARCHIVO_PRODUCTOS, 'w', encoding='utf-8') as f:
         # indent=4 para que el JSON sea legible, ensure_ascii=False para caracteres especiales
         json.dump(productos, f, indent=4, ensure_ascii=False)
 
 # Inicializar el archivo si no existe o está vacío con los productos de ejemplo
-# Esto solo se ejecuta la primera vez que el script es importado o corrido
+# Esto solo se ejecuta la primera vez
 if not os.path.exists(RUTA_ARCHIVO_PRODUCTOS) or os.path.getsize(RUTA_ARCHIVO_PRODUCTOS) == 0:
     productos_iniciales = [
         {"codigoProd": 123, "nombre": "Pan", "precio": 2000.00},
@@ -49,14 +48,15 @@ if not os.path.exists(RUTA_ARCHIVO_PRODUCTOS) or os.path.getsize(RUTA_ARCHIVO_PR
 
 
 
-# --- Funciones públicas para interactuar con los productos ---
+# --- Funciones 
 
 def obtener_todos_los_productos():
     """
     Devuelve la lista completa de productos.
-    Otros módulos deben usar esta función para obtener los datos más recientes.
+    Para obtener los datos más recientes.
     """
     return _cargar_productos()
+
 
 
 def agregar_producto(codigo, nombre, precio):
@@ -80,6 +80,7 @@ def agregar_producto(codigo, nombre, precio):
     return True, f"Producto '{nombre}' agregado exitosamente."
 
 
+
 def modificar_producto(codigo, nuevo_nombre=None, nuevo_precio=None):
     """
     Modifica un producto existente por su código y guarda los cambios.
@@ -87,7 +88,7 @@ def modificar_producto(codigo, nuevo_nombre=None, nuevo_precio=None):
     productos_actuales = _cargar_productos()
     encontrado = False
     for producto in productos_actuales:
-        if str(producto['codigoProd']) == str(codigo): # Comparar como string
+        if str(producto['codigoProd']) == str(codigo):
             if nuevo_nombre is not None:
                 producto['nombre'] = nuevo_nombre
             if nuevo_precio is not None:
@@ -107,7 +108,7 @@ def eliminar_producto(codigo):
     Elimina un producto por su código y guarda los cambios.
     """
     productos_actuales = _cargar_productos()
-    productos_filtrados = [p for p in productos_actuales if str(p['codigoProd']) != str(codigo)] # Comparar como string
+    productos_filtrados = [p for p in productos_actuales if str(p['codigoProd']) != str(codigo)] # Crea una lista nueva sin el producto a eliminar 
     
     if len(productos_filtrados) < len(productos_actuales):
         _guardar_productos(productos_filtrados)
@@ -122,6 +123,6 @@ def buscar_producto_por_codigo(codigo):
     """
     productos_actuales = _cargar_productos()
     for producto in productos_actuales:
-        if str(producto['codigoProd']) == str(codigo): # Comparar como string
+        if str(producto['codigoProd']) == str(codigo):
             return producto
     return None # Si no se encuentra el producto

@@ -1,6 +1,6 @@
 from tkinter import Frame, Label, Button, messagebox, Entry, Listbox, END, Scrollbar
 from PIL import Image, ImageTk
-import gestor_productos # Importa tu nuevo módulo de productos
+import gestor_productos #  módulo de gestion de productos
 
 class PantallaCobro(Frame):
     def __init__(self, master):
@@ -31,11 +31,12 @@ class PantallaCobro(Frame):
         # - - - Area de contenido principal
         contenido_Principal = Frame(self, padx=10, pady=10, bg="#f5f5f6")
         contenido_Principal.pack(fill="both", expand=True)
-        contenido_Principal.grid_columnconfigure(0, weight=1)  # Columna izquierda se expande al cambiar el tamaño de la ventana
-        contenido_Principal.grid_columnconfigure(1, weight=3)  # Columna derecha se expande
-        contenido_Principal.grid_rowconfigure(0, weight=1)    # Fila superior se expande
-        contenido_Principal.grid_rowconfigure(1, weight=0)    # Fila central
-        contenido_Principal.grid_rowconfigure(2, weight=0)    # Fila inferior
+        # Se expande
+        contenido_Principal.grid_columnconfigure(0, weight=1)  
+        contenido_Principal.grid_columnconfigure(1, weight=3)  
+        contenido_Principal.grid_rowconfigure(0, weight=1)    
+        contenido_Principal.grid_rowconfigure(1, weight=0)    
+        contenido_Principal.grid_rowconfigure(2, weight=0)    
 
 
         # - - Panel izquierdo
@@ -147,7 +148,7 @@ class PantallaCobro(Frame):
         """
         Elimina el último producto de la lista visual y descuenta su precio del total.
         """
-        if self.lista_productos_en_cobro: # Asegúrate de que haya productos para eliminar
+        if self.lista_productos_en_cobro: # Asegura de que haya productos para eliminar
             # Elimina el último elemento de la lista interna
             nombre_producto_eliminado, precio_producto_eliminado = self.lista_productos_en_cobro.pop()
             
