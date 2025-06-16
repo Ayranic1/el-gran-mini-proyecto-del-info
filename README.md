@@ -16,5 +16,5 @@ Los datos de los productos son guardados en un archivo JSON.
 ## Ejecución
 Luego de haber clonado el repositorio, para poder usarlo solo debes ejecutar el __Modulo_Principal.py__.
 
-Desde la terminal en la dirección del proyecto puedes ejecutar el siguiente comando:
+Desde la terminal en la dirección del proyecto puedes ejecutarlo con el siguiente comando:
 ```python Modulo_Principal.py```  
