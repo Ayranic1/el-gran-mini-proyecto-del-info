@@ -1,5 +1,4 @@
 from tkinter import Frame, Label, Button, Entry, Toplevel, messagebox, Listbox, END
-# Importa el nuevo módulo que gestiona los productos
 import gestor_productos # Cambiado de 'Productos' a 'gestor_productos'
 
 class PantallaListaProductos(Frame):
@@ -49,7 +48,7 @@ class PantallaListaProductos(Frame):
 
         colorBoton = "#adadc2"
 
-        boton_editar = Button(pie, text="Editar", command=self.iniciar_edicion, bg=colorBoton) # Llama a un nuevo método
+        boton_editar = Button(pie, text="Editar", command=self.iniciar_edicion, bg=colorBoton) 
         boton_editar.grid(row=0, column=1, padx=10, pady=10, sticky="ew")
 
         boton_eliminar = Button(pie, text="Eliminar", command=self.eliminar, bg=colorBoton)
@@ -106,9 +105,6 @@ class PantallaListaProductos(Frame):
             exito, mensaje = gestor_productos.agregar_producto(codigo, nombre, precio)
             if exito:
                 messagebox.showinfo("Éxito", mensaje)
-                self.actualizar_lista() # Refresca la lista visual
-                # No necesitas llamar a actualizar_lista en PantallaCobro directamente aquí,
-                # ya que Cobro siempre busca el producto más reciente del gestor.
             else:
                 messagebox.showerror("Error", mensaje)
             ventana.destroy()
@@ -124,10 +120,8 @@ class PantallaListaProductos(Frame):
             # Asumiendo que el formato es "Código - Nombre - $Precio"
             item_texto = self.lista.get(idx)
             try:
-                # Extraer el código del texto. Esto es un poco frágil si el formato cambia.
-                # Una mejor práctica sería guardar el código en un data-attribute o una lista paralela.
-                codigo = item_texto.split(' ')[0] # Asume que el código es la primera palabra antes del primer espacio
-                
+                codigo = item_texto.split(' ')[0] # se divide la cadena (split) y se toma el primer elemento de la lista
+
                 # Confirmación antes de eliminar
                 confirmar = messagebox.askyesno("Confirmar Eliminación", f"¿Está seguro que desea eliminar el producto con código {codigo}?")
                 if confirmar:
@@ -145,8 +139,7 @@ class PantallaListaProductos(Frame):
     def iniciar_edicion(self):
         seleccion = self.lista.curselection()
         if seleccion:
-            idx = seleccion[0]
-            # Similar a eliminar, obtener el código del producto seleccionado
+            idx = seleccion[0] # indice del elemento seleccionado
             item_texto = self.lista.get(idx)
             try:
                 codigo = item_texto.split(' ')[0] # Asume que el código es la primera palabra
@@ -166,7 +159,7 @@ class PantallaListaProductos(Frame):
             self.lista.insert(END, f"{producto['codigoProd']} - {producto['nombre']} - ${producto['precio']:.2f}")
 
 
-    def ventana_editar_producto(self, codigo_producto): # Ahora recibe el código
+    def ventana_editar_producto(self, codigo_producto):
         producto = gestor_productos.buscar_producto_por_codigo(codigo_producto)
         if not producto:
             messagebox.showerror("Error", "Producto no encontrado para editar.")
@@ -175,15 +168,22 @@ class PantallaListaProductos(Frame):
         ventana = Toplevel(self)
         ventana.title(f"Editar Producto: {producto['nombre']}")
         ventana.geometry("300x150")
-        ventana.configure(bg="#b5daff") # Un color que combine con tu estilo
+        ventana.configure(bg="#f5f5f6") 
 
-        Label(ventana, text="Nombre:", bg="#b5daff").pack(pady=(10,0))
-        entry_nombre = Entry(ventana)
+        # carga de icono
+        try:
+            ventana.iconbitmap("Images/icono.ico")
+        except Exception as e:
+            print(f"Advertencia: No se pudo cargar el icono: {e}")
+
+
+        Label(ventana, text="Nombre:", bg="#f5f5f6").pack(pady=(10,0))
+        entry_nombre = Entry(ventana, bg="#d8e1e6")
         entry_nombre.insert(0, producto["nombre"])
         entry_nombre.pack(pady=5)
 
-        Label(ventana, text="Precio:", bg="#b5daff").pack()
-        entry_precio = Entry(ventana)
+        Label(ventana, text="Precio:", bg="#f5f5f6").pack()
+        entry_precio = Entry(ventana, bg="#d8e1e6")
         entry_precio.insert(0, str(producto["precio"]))
         entry_precio.pack(pady=5)
 
@@ -208,4 +208,4 @@ class PantallaListaProductos(Frame):
                 messagebox.showerror("Error", mensaje)
             ventana.destroy()
 
-        Button(ventana, text="Guardar", command=guardar_cambios, bg="#b5f5ff").pack(pady=10)
+        Button(ventana, text="Guardar", command=guardar_cambios, bg="#3a2d97", fg="white").pack(pady=10)

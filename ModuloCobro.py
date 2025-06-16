@@ -172,8 +172,3 @@ class PantallaCobro(Frame):
         self.lista_productos_en_cobro.clear()
         self.total = 0.0
         self.label_total.config(text="Total: $0.00")
-
-    # Esta función se mantiene pero no es estrictamente necesaria para el flujo actual
-    # ya que `buscar_producto_por_codigo` siempre carga la última versión.
-    def actualizar_lista(self):
-        pass
