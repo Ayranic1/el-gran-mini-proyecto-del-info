@@ -1,4 +1,4 @@
-# Sistema de Caja para Supermercado
+# Mini proyecto grupo 5: Sistema de Caja para Supermercado
 
 ## Descripción
 
