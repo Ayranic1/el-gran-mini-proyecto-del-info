@@ -31,7 +31,6 @@ class PantallaCobro(Frame):
         # - - - Area de contenido principal
         contenido_Principal = Frame(self, padx=10, pady=10, bg="#f5f5f6")
         contenido_Principal.pack(fill="both", expand=True)
-        
         # Se expande
         contenido_Principal.grid_columnconfigure(0, weight=1)  
         contenido_Principal.grid_columnconfigure(1, weight=3)  
@@ -67,6 +66,7 @@ class PantallaCobro(Frame):
         self.boton_agregar.pack(fill="x", pady=5, padx=10)
         
         # Boton eliminar ultimo producto registrado
+        # ¡AQUÍ ESTÁ EL CAMBIO! Ahora llama a un nuevo método `eliminar_ultimo_producto_en_cobro`
         self.boton_eliminar = Button(panel_izquierdo, text="Eliminar último producto", command=self.eliminar_ultimo_producto_en_cobro, bg="#adadc2", font=("Arial", 14))
         self.boton_eliminar.pack(fill="x", pady=5, padx=10)
 

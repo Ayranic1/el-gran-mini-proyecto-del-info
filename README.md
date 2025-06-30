@@ -13,7 +13,7 @@ Los datos de los productos son guardados en un archivo JSON.
 ### Requisitos
 - Es necesesario tener instalado la biblioteca __Pillow__ .
 
-### Ejecución
+## Ejecución
 
 Luego de haber clonado el repositorio, para poder usarlo solo debes ejecutar el __Modulo_Principal.py__.
 

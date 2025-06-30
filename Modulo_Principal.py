@@ -1,6 +1,7 @@
 from tkinter import *
 from tkinter import messagebox
 from PIL import Image, ImageTk
+from datetime import datetime
 
 import gestor_productos # Fuciones para gestionar los productos en json
 
@@ -12,10 +13,10 @@ class sistema(Tk):
         super().__init__()
         self.title("Sistema de Caja para Supermercado")
         self.geometry("900x450")
-        self.configure(bg="#f5f5f6")
+        self.configure(bg="#404045")
         self.resizable(False, False)
 
-        # intenta cargar Icono de la ventana
+        # Icono de la ventana
         try:
             self.iconbitmap("Images/icono.ico")
         except Exception as e:
@@ -29,7 +30,7 @@ class sistema(Tk):
         self.mostrar_frame("PantallaPrincipal")
 
     def mostrar_frame(self, contenedor):
-        frame = self.frames[contenedor]
+        frame = self.frames[contenedor]  # contenedor es un string
         if hasattr(frame, "actualizar_lista"):
             frame.actualizar_lista()
         frame.tkraise()
@@ -42,25 +43,29 @@ class PantallaPrincipal(Frame):
         self.grid_columnconfigure(1, weight=1)
 
         
-        # intenta cargar la imagen de fondo
+
         try:
-            bg_img = Image.open("Images/main.png") 
-            bg_img = bg_img.resize((900, 450), Image.Resampling.LANCZOS) # LANCZOS es para mejorar calidad
+            bg_img = Image.open("Images/fondo.jpg")  # Cambia aquí el nombre si tu imagen se llama diferente 
+            bg_img = bg_img.resize((900, 450), Image.Resampling.LANCZOS) # Usar LANCZOS para mejor calidad
             self.bg_imgtk = ImageTk.PhotoImage(bg_img)
             self.bg_label = Label(self, image=self.bg_imgtk)
             self.bg_label.place(x=0, y=0, relwidth=1, relheight=1)
 
 
-        except Exception as e:
+        except Exception as e: # Captura la excepción para debug
             print(f"Advertencia: No se pudo cargar la imagen de fondo: {e}")
-            self.bg_label = Label(self, bg="#f5f5f6")
+            self.bg_label = Label(self, bg="#6D3D71")
             self.bg_label.place(x=0, y=0, relwidth=1, relheight=1)
 
-
-        # - - - Barra superior
+         # - - - Barra superior
         top_frame = Frame(self, bg="#0000ff", bd=2, relief="groove")
         top_frame.pack(side="top", fill="both")
         top_frame.config(bg="#f5f5f6", border=0, height=40)
+
+        # Label para la fecha y hora
+        self.label_fecha_hora = Label(self, font=("Arial", 12), bg="#f5f5f6", fg="#000000")
+        self.label_fecha_hora.place(x=600, y=5, width=290, height=30)
+        self.actualizar_fecha_hora()
 
         # titulo    
         label_titulo = Label(top_frame, text="¡Bienvenido al Sistema de Caja!", font=("Arial", 16), bg="#f5f5f6", fg="#000000")
@@ -72,7 +77,12 @@ class PantallaPrincipal(Frame):
 
         listaProductosBoton = Button(self, text="Lista de Productos", command=lambda: master.mostrar_frame("PantallaListaProductos"), bg="#adadc2")
         listaProductosBoton.place(x=220, y=400, width=200, height=40)
-
+   
+    def actualizar_fecha_hora(self):
+        ahora = datetime.now()
+        texto = ahora.strftime("%d/%m/%Y %H:%M:%S")
+        self.label_fecha_hora.config(text=texto)
+        self.after(1000, self.actualizar_fecha_hora)
 
 if __name__ == "__main__":
     app = sistema()
