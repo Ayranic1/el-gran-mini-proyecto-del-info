@@ -125,4 +125,4 @@ def buscar_producto_por_codigo(codigo):
     for producto in productos_actuales:
         if str(producto['codigoProd']) == str(codigo):
             return producto
-    return None # Si no se encuentra el producto
+    return None 

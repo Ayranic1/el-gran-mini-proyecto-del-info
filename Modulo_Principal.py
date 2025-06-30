@@ -15,7 +15,7 @@ class sistema(Tk):
         self.configure(bg="#f5f5f6")
         self.resizable(False, False)
 
-        # Icono de la ventana
+        # intenta cargar Icono de la ventana
         try:
             self.iconbitmap("Images/icono.ico")
         except Exception as e:
@@ -29,7 +29,7 @@ class sistema(Tk):
         self.mostrar_frame("PantallaPrincipal")
 
     def mostrar_frame(self, contenedor):
-        frame = self.frames[contenedor]  # contenedor es un string
+        frame = self.frames[contenedor]
         if hasattr(frame, "actualizar_lista"):
             frame.actualizar_lista()
         frame.tkraise()
@@ -42,21 +42,22 @@ class PantallaPrincipal(Frame):
         self.grid_columnconfigure(1, weight=1)
 
         
-
+        # intenta cargar la imagen de fondo
         try:
-            bg_img = Image.open("Images/main.png")  # Cambia aquí el nombre si tu imagen se llama diferente 
-            bg_img = bg_img.resize((900, 450), Image.Resampling.LANCZOS) # Usar LANCZOS para mejor calidad
+            bg_img = Image.open("Images/main.png") 
+            bg_img = bg_img.resize((900, 450), Image.Resampling.LANCZOS) # LANCZOS es para mejorar calidad
             self.bg_imgtk = ImageTk.PhotoImage(bg_img)
             self.bg_label = Label(self, image=self.bg_imgtk)
             self.bg_label.place(x=0, y=0, relwidth=1, relheight=1)
 
 
-        except Exception as e: # Captura la excepción para debug
+        except Exception as e:
             print(f"Advertencia: No se pudo cargar la imagen de fondo: {e}")
             self.bg_label = Label(self, bg="#f5f5f6")
             self.bg_label.place(x=0, y=0, relwidth=1, relheight=1)
 
-         # - - - Barra superior
+
+        # - - - Barra superior
         top_frame = Frame(self, bg="#0000ff", bd=2, relief="groove")
         top_frame.pack(side="top", fill="both")
         top_frame.config(bg="#f5f5f6", border=0, height=40)
